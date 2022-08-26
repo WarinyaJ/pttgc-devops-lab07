@@ -12,8 +12,6 @@ on:
   pull_request:
     types:
       - opened
-    branches:
-      - main
 
 jobs:
   unittest:
@@ -78,7 +76,7 @@ jobs:
       - run: python coverage.py 1
         working-directory: ./src
         name: Simple Quality Gate
-        
+
   comment:
     runs-on: ubuntu-latest
     needs: ["quality-gate"]
@@ -103,3 +101,50 @@ jobs:
 - Create Pull Request 
 
 - Go to `Actions` tab to see the workflow is running
+
+- Merge Pull request to `main` branch and delete `test-pr` branch
+
+
+## Exercise 2 - Merge Pull Request Workflow
+
+- Using the same repository from exercise 1
+
+- Add new workflow name `.github/workflows/merge-pr-workflow.yaml`
+```yaml
+name: Merge Pull Request Workflow
+
+on: 
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  build-container:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Build an image from Dockerfile
+        run: |
+          docker build . --file Dockerfile --tag pttgc-devops-lab07/blog-service:${{ github.sha }}
+
+  deploy-dev:
+    runs-on: ubuntu-latest
+    needs: "build-container"
+    steps:
+      - name: Mock deployment step 
+        run: echo 'Mock deploy to dev'
+```
+
+- Commit and push the code
+
+- Create another new branch, e.g. `mr1`
+
+- Ensure that you're in `mr1` branch, add simple text file to repository, then commit and push
+
+- Create Pull Request
+
+- Merge Pull Request
+
+- Go to `Actions` tab to see your workflow is running
