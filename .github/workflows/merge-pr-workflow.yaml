@@ -3,7 +3,7 @@ name: Merge Pull Request Workflow
 on: 
   pull_request:
     branches:
-      - "master"
+      - "main"
     types:
       - "closed"
 
