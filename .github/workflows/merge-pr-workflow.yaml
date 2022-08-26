@@ -2,10 +2,8 @@ name: Merge Pull Request Workflow
 
 on: 
   pull_request:
-    branches:
-      - "main"
     types:
-      - "closed"
+      - closed
 
 jobs:
   build-container:
