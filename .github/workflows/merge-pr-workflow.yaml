@@ -1,0 +1,26 @@
+name: Merge Pull Request Workflow
+
+on: 
+  pull_request:
+    branches:
+      - "master"
+    types:
+      - "closed"
+
+jobs:
+  build-container:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Build an image from Dockerfile
+        run: |
+          docker build . --file Dockerfile --tag pttgc-devops-lab07/blog-service:${{ github.sha }}
+
+  deploy-dev:
+    runs-on: ubuntu-latest
+    needs: "build-container"
+    steps:
+      - name: Mock deployment step 
+        run: echo 'Mock deploy to dev'
